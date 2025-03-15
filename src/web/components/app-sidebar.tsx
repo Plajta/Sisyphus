@@ -6,25 +6,24 @@ import { NavMain } from "~/components/nav-main";
 import { Sidebar, SidebarHeader, SidebarRail } from "~/components/ui/sidebar";
 import { Separator } from "~/components/ui/separator";
 
-const data = {
-	navMain: [
-		{
-			title: "Konfigurace",
-			url: "/dashboard/configuration",
-			icon: Settings,
-		},
-	],
-};
+export const navItems = [
+	{
+		title: "Konfigurace",
+		description: "Konfigurace Plajta komunikátoru",
+		url: "/dashboard/configuration",
+		icon: Settings,
+	},
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
 		<Sidebar className="border-r-0" {...props}>
 			<SidebarHeader className="pl-0">
-				<span className="pl-2 truncate font-bold text-xl">Plajstick Komunikátor</span>
+				<span className="pl-2 truncate font-bold text-xl">Plajta Komunikátor</span>
 
 				<Separator />
 
-				<NavMain items={data.navMain} />
+				<NavMain items={navItems} />
 			</SidebarHeader>
 
 			<SidebarRail />
