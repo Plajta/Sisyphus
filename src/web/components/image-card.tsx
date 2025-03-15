@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardContent } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { VoiceButton } from "~/components/voice-button";
 
 export function ImageCard({
 	item: { id, text, files },
@@ -33,9 +34,7 @@ export function ImageCard({
 						<p className="text-lg">{text}</p>
 
 						<div className="flex gap-1">
-							<Button variant="outline" disabled={!voice}>
-								<Volume2 />
-							</Button>
+							<VoiceButton source={voice && `/api/file/${voice.id}`} />
 
 							<Link href={`/dashboard/configuration/dialog/button/${id}`}>
 								<Button variant="outline">

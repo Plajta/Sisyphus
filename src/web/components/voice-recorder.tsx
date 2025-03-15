@@ -51,6 +51,7 @@ export function VoiceRecorder() {
 	return (
 		<div className="flex gap-4 items-center h-10">
 			<Button
+				type="button"
 				className={`${isRecording ? "bg-red-600 hover:bg-red-500" : ""} text-white`}
 				onClick={isRecording ? stopRecording : startRecording}
 			>
@@ -59,7 +60,7 @@ export function VoiceRecorder() {
 
 			{audioURL && !isRecording && <audio controls src={audioURL} />}
 
-			<input ref={fileInputRef} type="file" name="audio" style={{ display: "none" }} />
+			<input ref={fileInputRef} type="file" name="voice" style={{ display: "none" }} />
 		</div>
 	);
 }

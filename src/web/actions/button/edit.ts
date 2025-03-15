@@ -70,7 +70,7 @@ export const editButton = actionClient.schema(schema).action(async ({ parsedInpu
 		});
 
 		try {
-			await writeFile(`${path}/${fileRecord.id}.waw`, Buffer.from(await voice.arrayBuffer()));
+			await writeFile(`${path}/${fileRecord.id}.wav`, Buffer.from(await voice.arrayBuffer()));
 
 			revalidatePath("/dashboard/configuration");
 		} catch (e) {
