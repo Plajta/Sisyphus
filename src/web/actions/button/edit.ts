@@ -5,14 +5,15 @@ import { zfd } from "zod-form-data";
 import { actionClient } from "~/modules/safe-action";
 import { writeFile } from "node:fs/promises";
 import { prisma } from "~/modules/prisma";
+import { revalidatePath } from "next/cache";
 
 const path = `${process.cwd()}/files`;
 
 const schema = zfd.formData({
-	id: zfd.numeric(z.number()),
+	id: zfd.text(z.coerce.number()),
 	text: zfd.text(z.string()).optional(),
-	image: zfd.file().optional(),
-	voice: zfd.file().optional(),
+	image: zfd.file(z.instanceof(File).optional()),
+	voice: zfd.file(z.instanceof(File).optional()),
 });
 
 export const editButton = actionClient.schema(schema).action(async ({ parsedInput: { id, text, image, voice } }) => {
@@ -25,6 +26,8 @@ export const editButton = actionClient.schema(schema).action(async ({ parsedInpu
 				text,
 			},
 		});
+
+		revalidatePath("/dashboard/configuration");
 	}
 
 	if (image) {
@@ -37,8 +40,10 @@ export const editButton = actionClient.schema(schema).action(async ({ parsedInpu
 
 		try {
 			await writeFile(`${path}/${fileRecord.id}.png`, Buffer.from(await image.arrayBuffer()));
+
+			revalidatePath("/dashboard/configuration");
 		} catch (e) {
-			console.log(e);
+			return { success: true, message: e };
 		}
 	}
 
@@ -52,8 +57,10 @@ export const editButton = actionClient.schema(schema).action(async ({ parsedInpu
 
 		try {
 			await writeFile(`${path}/${fileRecord.id}.waw`, Buffer.from(await voice.arrayBuffer()));
+
+			revalidatePath("/dashboard/configuration");
 		} catch (e) {
-			console.log(e);
+			return { success: true, message: e };
 		}
 	}
 

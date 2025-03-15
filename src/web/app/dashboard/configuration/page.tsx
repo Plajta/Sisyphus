@@ -6,6 +6,9 @@ export default async function Page() {
 		include: {
 			files: true,
 		},
+		orderBy: {
+			createdAt: "asc",
+		},
 	});
 
 	return (
