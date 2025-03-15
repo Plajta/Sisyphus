@@ -63,7 +63,7 @@ class SerialCommunicator:
                     response += line + "\n"
 
                 if response:
-                    print("Received: " + response.replace(command, ""))
+                    print("Received: " + response)
                     return response
                 else:
                     print("No response received")
