@@ -23,7 +23,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
 					<div className="grid w-full items-center gap-1.5">
 						<Label htmlFor="picture">Obrázek</Label>
-						<Input id="picture" type="file" />
+						<Input id="picture" name="image" type="file" />
 					</div>
 
 					<div className="grid w-full items-center gap-1.5">
