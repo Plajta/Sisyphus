@@ -7,9 +7,11 @@ const path = `${process.cwd()}/files`;
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
+	const idWithoutExtension = id.split(".")[0];
+
 	const file = await prisma.file.findFirst({
 		where: {
-			id,
+			id: idWithoutExtension,
 		},
 	});
 
@@ -18,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 	}
 
 	try {
-		const fileBuffer = await readFile(`${path}/${file.id}`);
+		const fileBuffer = await readFile(`${path}/${id}${file.type === "IMAGE" ? ".png" : ".waw"}`);
 
 		return new Response(fileBuffer, {
 			headers: {

@@ -31,6 +31,13 @@ export const editButton = actionClient.schema(schema).action(async ({ parsedInpu
 	}
 
 	if (image) {
+		await prisma.file.deleteMany({
+			where: {
+				type: "IMAGE",
+				buttonId: id,
+			},
+		});
+
 		const fileRecord = await prisma.file.create({
 			data: {
 				type: "IMAGE",
@@ -48,6 +55,13 @@ export const editButton = actionClient.schema(schema).action(async ({ parsedInpu
 	}
 
 	if (voice) {
+		await prisma.file.deleteMany({
+			where: {
+				type: "VOICE",
+				buttonId: id,
+			},
+		});
+
 		const fileRecord = await prisma.file.create({
 			data: {
 				type: "VOICE",

@@ -16,16 +16,13 @@ export function ImageCard({
 	const voice = files.find((file) => file.type === "VOICE");
 
 	return (
-		<Card>
+		<Card style={{ height: 300 }}>
 			<CardHeader className="flex justify-center">
-				{image && (
-					<Image
-						src="https://img.privezemenakup.cz/images/Rohl%C3%ADk%20tukov%C3%BD%2043g.jpg"
-						width={250}
-						height={100}
-						alt="rohlik"
-					/>
-				)}
+				<div style={{ height: 170 }}>
+					{image && (
+						<Image src={`/api/file/${image.id}`} width={150} height={100} alt={`tlacitko-${image.id}`} />
+					)}
+				</div>
 			</CardHeader>
 
 			<Separator />
