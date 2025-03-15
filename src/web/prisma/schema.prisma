@@ -9,7 +9,7 @@ datasource db {
 
 enum FileType {
     VOICE
-    IAMGE
+    IMAGE
 }
 
 model Sheet {
@@ -24,7 +24,6 @@ model Sheet {
 
 model File {
     id        String   @id @default(uuid())
-    path      String
     type      FileType
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
