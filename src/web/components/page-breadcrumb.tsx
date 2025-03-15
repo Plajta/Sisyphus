@@ -1,13 +1,14 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { navItems } from "~/components/app-sidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "~/components/ui/breadcrumb";
 
 export function PageBreadcrumb() {
 	const pathname = usePathname();
+	const params = useParams();
 
-	const navItem = navItems.find((item) => item.url === pathname);
+	const navItem = navItems.find((item) => item.url === pathname.replace(`/${params.sheetId}`, ""));
 
 	return (
 		navItem && (

@@ -10,7 +10,7 @@ export const navItems = [
 	{
 		title: "Konfigurace",
 		description: "Konfigurace Plajta komunikátoru",
-		url: "/dashboard/configuration",
+		url: "/dashboard/configuration/sheet",
 		icon: Settings,
 	},
 ];
