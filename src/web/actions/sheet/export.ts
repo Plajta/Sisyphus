@@ -9,10 +9,6 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const path = `${process.cwd()}/files`;
 
-const schema = z.object({
-	id: z.coerce.number(),
-});
-
 function mmsToPoints(mms: number) {
 	return mms * 2.83465;
 }
@@ -45,6 +41,11 @@ const sheetDimensions = {
 	buttonGridGap: mmsToPoints(3),
 	gridPadding: mmsToPoints(10),
 };
+
+const schema = z.object({
+	id: z.coerce.number(),
+	//type: z.enum(["PLAJKOM", "FT12"]),
+});
 
 export const exportSheet = actionClient.schema(schema).action(async ({ parsedInput: { id } }) => {
 	const sheet = await prisma.sheet.findFirst({
