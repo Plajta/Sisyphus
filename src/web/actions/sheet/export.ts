@@ -38,7 +38,7 @@ function create2DArrayFromArray<T>(arr: T[]): T[][] {
 
 const sheetDimensions = {
 	width: mmsToPoints(138),
-	height: mmsToPoints(150),
+	height: mmsToPoints(160),
 	buttonGridHeight: mmsToPoints(140),
 	sectionDimensions: mmsToPoints(42),
 	colorSectionHeight: mmsToPoints(10),
@@ -73,12 +73,38 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 
 	const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-	const text = "© Plajtakom 2025";
+	const text = "© Plajta 2025";
 	const fontSize = 15;
 
-	page.drawText(text, {
+	page.drawText(sheet.name.normalize("NFD").replace(/[\u0300-\u036f]/g, ""), {
 		x: offsetPoints(mmsToPoints(2)),
 		y: offsetPoints(mmsToPoints(143)),
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	});
+
+	page.drawText(text, {
+		x: offsetPoints(mmsToPoints(95)),
+		y: offsetPoints(mmsToPoints(143)),
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	});
+
+	const foldText = "-- Tudle vohnout --";
+
+	page.drawText(foldText, {
+		x: offsetPoints(mmsToPoints(2)),
+		y: offsetPoints(mmsToPoints(153)),
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	});
+
+	page.drawText(foldText, {
+		x: offsetPoints(mmsToPoints(92)),
+		y: offsetPoints(mmsToPoints(153)),
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
@@ -87,6 +113,16 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 	page.drawLine({
 		start: { x: offsetPoints(0), y: offsetPoints(sheetDimensions.buttonGridHeight) },
 		end: { x: offsetPoints(sheetDimensions.width), y: offsetPoints(sheetDimensions.buttonGridHeight) },
+		thickness: 1,
+		color: rgb(0, 0, 0),
+	});
+
+	page.drawLine({
+		start: { x: offsetPoints(0), y: offsetPoints(sheetDimensions.buttonGridHeight + mmsToPoints(10)) },
+		end: {
+			x: offsetPoints(sheetDimensions.width),
+			y: offsetPoints(sheetDimensions.buttonGridHeight + mmsToPoints(10)),
+		},
 		thickness: 1,
 		color: rgb(0, 0, 0),
 	});
@@ -102,7 +138,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 
 	page.drawRectangle({
 		x: offsetPoints(sheetDimensions.sectionDimensions + sheetDimensions.buttonGridGap * 2),
-		y: offsetPoints(sheetDimensions.buttonGridHeight),
+		y: offsetPoints(sheetDimensions.buttonGridHeight + mmsToPoints(10)),
 		height: sheetDimensions.colorSectionHeight,
 		width: sheetDimensions.sectionDimensions,
 		color: rgb(1, 0, 0),
