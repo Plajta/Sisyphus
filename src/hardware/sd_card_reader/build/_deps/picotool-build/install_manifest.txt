@@ -1,0 +1,5 @@
+/home/Sles/pr/pico/sd_card_reader/build/_deps/picotool/picotool
+/home/Sles/pr/pico/sd_card_reader/build/_deps/picotool/picotoolTargets.cmake
+/home/Sles/pr/pico/sd_card_reader/build/_deps/picotool/picotoolTargets-release.cmake
+/home/Sles/pr/pico/sd_card_reader/build/_deps/picotool/picotoolConfig.cmake
+/home/Sles/pr/pico/sd_card_reader/build/_deps/picotool/picotoolConfigVersion.cmake

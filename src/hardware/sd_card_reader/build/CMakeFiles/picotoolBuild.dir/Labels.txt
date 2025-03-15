@@ -1,0 +1,14 @@
+# Target labels
+ picotoolBuild
+# Source files and their labels
+/home/Sles/pr/pico/sd_card_reader/build/CMakeFiles/picotoolBuild
+/home/Sles/pr/pico/sd_card_reader/build/CMakeFiles/picotoolBuild.rule
+/home/Sles/pr/pico/sd_card_reader/build/CMakeFiles/picotoolBuild-complete.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-build.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-configure.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-download.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-install.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-mkdir.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-patch.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-test.rule
+/home/Sles/pr/pico/sd_card_reader/build/picotool/src/picotoolBuild-stamp/picotoolBuild-update.rule
