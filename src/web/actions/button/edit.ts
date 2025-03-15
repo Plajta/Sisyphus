@@ -15,7 +15,7 @@ const schema = zfd.formData({
 	voice: zfd.file().optional(),
 });
 
-export const loginUser = actionClient.schema(schema).action(async ({ parsedInput: { id, text, image, voice } }) => {
+export const editButton = actionClient.schema(schema).action(async ({ parsedInput: { id, text, image, voice } }) => {
 	if (text) {
 		await prisma.button.update({
 			where: {

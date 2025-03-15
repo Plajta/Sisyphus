@@ -1,4 +1,6 @@
+import { editButton } from "~/actions/button/edit";
 import { DialogWrapper } from "~/components/dialog-wrapper";
+import { FormWrapper } from "~/components/form-wrapper";
 import { Button } from "~/components/ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
@@ -10,29 +12,31 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
 	return (
 		<DialogWrapper>
-			<DialogContent className="">
+			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Úprava tlačítka {id}</DialogTitle>
 				</DialogHeader>
 
-				<div className="flex flex-col gap-4">
-					<div className="grid w-full items-center gap-1.5">
-						<Label htmlFor="picture">Text</Label>
-						<Input name="text" placeholder="Text tlačítka" />
+				<FormWrapper action={editButton}>
+					<div className="flex flex-col gap-4">
+						<div className="grid w-full items-center gap-1.5">
+							<Label htmlFor="picture">Text</Label>
+							<Input name="text" placeholder="Text tlačítka" />
+						</div>
+
+						<div className="grid w-full items-center gap-1.5">
+							<Label htmlFor="picture">Obrázek</Label>
+							<Input id="picture" name="image" type="file" />
+						</div>
+
+						<div className="grid w-full items-center gap-1.5">
+							<Label htmlFor="picture">Zvuk</Label>
+							<VoiceRecorder />
+						</div>
 					</div>
 
-					<div className="grid w-full items-center gap-1.5">
-						<Label htmlFor="picture">Obrázek</Label>
-						<Input id="picture" name="image" type="file" />
-					</div>
-
-					<div className="grid w-full items-center gap-1.5">
-						<Label htmlFor="picture">Zvuk</Label>
-						<VoiceRecorder />
-					</div>
-				</div>
-
-				<Button>Uložit</Button>
+					<Button>Uložit</Button>
+				</FormWrapper>
 			</DialogContent>
 		</DialogWrapper>
 	);
