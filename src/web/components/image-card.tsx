@@ -1,4 +1,4 @@
-import { Volume2 } from "lucide-react";
+import { Edit, Volume2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardContent } from "~/components/ui/card";
@@ -21,10 +21,17 @@ export function ImageCard() {
 			<CardContent>
 				<div className="flex flex-col gap-4">
 					<div className="flex justify-between items-center">
-						<p className="text-lg font-medium justify-end">Přidat</p>
-						<Button variant="outline">
-							<Volume2 />
-						</Button>
+						<p className="text-lg">Přidat</p>
+
+						<div className="flex gap-1">
+							<Button variant="outline">
+								<Volume2 />
+							</Button>
+
+							<Button variant="outline">
+								<Edit />
+							</Button>
+						</div>
 					</div>
 				</div>
 			</CardContent>
