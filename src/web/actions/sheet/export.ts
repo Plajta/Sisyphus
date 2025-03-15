@@ -5,7 +5,7 @@ import { actionClient } from "~/modules/safe-action";
 import { prisma } from "~/modules/prisma";
 
 import { PageSizes, PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 const path = `${process.cwd()}/files`;
 
@@ -15,6 +15,10 @@ const schema = z.object({
 
 function mmsToPoints(mms: number) {
 	return mms * 2.83465;
+}
+
+function offsetPoints(points: number) {
+	return points + mmsToPoints(10);
 }
 
 function create2DArrayFromArray<T>(arr: T[]): T[][] {
@@ -29,7 +33,7 @@ function create2DArrayFromArray<T>(arr: T[]): T[][] {
 		result.push(arr.slice(i * size, (i + 1) * size));
 	}
 
-	return result;
+	return result.reverse();
 }
 
 const sheetDimensions = {
@@ -39,6 +43,7 @@ const sheetDimensions = {
 	sectionDimensions: mmsToPoints(42),
 	colorSectionHeight: mmsToPoints(10),
 	buttonGridGap: mmsToPoints(3),
+	gridPadding: mmsToPoints(10),
 };
 
 export const exportSheet = actionClient.schema(schema).action(async ({ parsedInput: { id } }) => {
@@ -47,7 +52,14 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 			id,
 		},
 		include: {
-			buttons: true,
+			buttons: {
+				include: {
+					files: true,
+				},
+				orderBy: {
+					createdAt: "asc",
+				},
+			},
 		},
 	});
 
@@ -65,23 +77,23 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 	const fontSize = 15;
 
 	page.drawText(text, {
-		x: mmsToPoints(2),
-		y: mmsToPoints(143),
+		x: offsetPoints(mmsToPoints(2)),
+		y: offsetPoints(mmsToPoints(143)),
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
 	});
 
 	page.drawLine({
-		start: { x: 0, y: sheetDimensions.buttonGridHeight },
-		end: { x: sheetDimensions.width, y: sheetDimensions.buttonGridHeight },
+		start: { x: offsetPoints(0), y: offsetPoints(sheetDimensions.buttonGridHeight) },
+		end: { x: offsetPoints(sheetDimensions.width), y: offsetPoints(sheetDimensions.buttonGridHeight) },
 		thickness: 1,
 		color: rgb(0, 0, 0),
 	});
 
 	page.drawRectangle({
-		x: 0,
-		y: 0,
+		x: offsetPoints(0),
+		y: offsetPoints(0),
 		width: sheetDimensions.width,
 		height: sheetDimensions.height,
 		borderWidth: 1,
@@ -89,8 +101,8 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 	});
 
 	page.drawRectangle({
-		x: sheetDimensions.sectionDimensions + sheetDimensions.buttonGridGap * 2,
-		y: sheetDimensions.buttonGridHeight,
+		x: offsetPoints(sheetDimensions.sectionDimensions + sheetDimensions.buttonGridGap * 2),
+		y: offsetPoints(sheetDimensions.buttonGridHeight),
 		height: sheetDimensions.colorSectionHeight,
 		width: sheetDimensions.sectionDimensions,
 		color: rgb(1, 0, 0),
@@ -100,16 +112,38 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 
 	for (const [rowIndex, row] of button2DArray.entries()) {
 		for (const [buttonIndex, button] of row.entries()) {
-			page.drawRectangle({
-				x:
+			const imageFile = button.files.find((file) => file.type === "IMAGE");
+
+			if (!imageFile) {
+				continue;
+			}
+
+			const fileBuffer = await readFile(`${path}/${imageFile.id}.png`);
+
+			const image = await pdfDoc.embedPng(fileBuffer);
+
+			page.drawImage(image, {
+				x: offsetPoints(
 					sheetDimensions.buttonGridGap +
-					buttonIndex * (sheetDimensions.buttonGridGap + sheetDimensions.sectionDimensions),
-				y:
-					sheetDimensions.buttonGridGap +
-					rowIndex * (sheetDimensions.buttonGridGap + sheetDimensions.sectionDimensions),
-				height: sheetDimensions.sectionDimensions,
+						buttonIndex * (sheetDimensions.buttonGridGap + sheetDimensions.sectionDimensions)
+				),
+				y: offsetPoints(
+					mmsToPoints(20) + rowIndex * (sheetDimensions.buttonGridGap + sheetDimensions.sectionDimensions)
+				),
+				height: sheetDimensions.sectionDimensions - 50,
 				width: sheetDimensions.sectionDimensions,
-				color: rgb(0, 0, 1),
+			});
+
+			page.drawText(button.text.toUpperCase(), {
+				x: offsetPoints(
+					mmsToPoints(10) + buttonIndex * (sheetDimensions.buttonGridGap + sheetDimensions.sectionDimensions)
+				),
+				y: offsetPoints(
+					mmsToPoints(10) + rowIndex * (sheetDimensions.buttonGridGap + sheetDimensions.sectionDimensions)
+				),
+				size: 15,
+				font: font,
+				color: rgb(0, 0, 0),
 			});
 		}
 	}
