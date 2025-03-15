@@ -1,10 +1,15 @@
 import { Edit, Volume2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardContent } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 
-export function ImageCard() {
+interface ImageCardProps {
+	id: number;
+}
+
+export function ImageCard({ id }: ImageCardProps) {
 	return (
 		<Card>
 			<CardHeader className="flex justify-center">
@@ -28,9 +33,11 @@ export function ImageCard() {
 								<Volume2 />
 							</Button>
 
-							<Button variant="outline">
-								<Edit />
-							</Button>
+							<Link href={`/dashboard/configuration/dialog/button/${id}`}>
+								<Button variant="outline">
+									<Edit />
+								</Button>
+							</Link>
 						</div>
 					</div>
 				</div>
