@@ -20,11 +20,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 	}
 
 	try {
-		const fileBuffer = await readFile(`${path}/${id}${file.type === "IMAGE" ? ".png" : ".wav"}`);
+		const fileBuffer = await readFile(
+			`${path}/${id}${file.type === "IMAGE" ? ".png" : file.type === "PDF" ? ".pdf" : ".wav"}`
+		);
 
 		return new Response(fileBuffer, {
 			headers: {
-				"Content-Type": file.type === "IMAGE" ? "image/png" : "audio/wav",
+				"Content-Type":
+					file.type === "IMAGE" ? "image/png" : file.type === "PDF" ? "application/pdf" : "audio/wav",
 				"Content-Disposition": `inline; filename="${file.id}"`,
 			},
 		});

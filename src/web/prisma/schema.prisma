@@ -10,6 +10,7 @@ datasource db {
 enum FileType {
     VOICE
     IMAGE
+    PDF
 }
 
 model Sheet {
@@ -29,8 +30,8 @@ model File {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    button   Button @relation(fields: [buttonId], references: [id])
-    buttonId Int
+    button   Button? @relation(fields: [buttonId], references: [id])
+    buttonId Int?
 
     @@map("files")
 }
