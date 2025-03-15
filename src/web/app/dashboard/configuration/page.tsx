@@ -13,7 +13,7 @@ export default async function Page() {
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 px-4 py-10 pb-0">
-			<div className="grid grid-cols-3 gap-8">
+			<div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 				{buttons.map((item) => (
 					<ImageCard key={item.id} item={item} />
 				))}
