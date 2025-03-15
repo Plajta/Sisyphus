@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.13)
 
 # Include the Pico SDK initialization script
+
+set(PICO_SDK_FETCH_FROM_GIT on)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include($ENV{PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 project(my_project)
