@@ -8,7 +8,9 @@ export function PageBreadcrumb() {
 	const pathname = usePathname();
 	const params = useParams();
 
-	const navItem = navItems.find((item) => item.url === pathname.replace(`/${params.sheetId}`, ""));
+	const navItem = navItems.find(
+		(item) => item.url === pathname.split("/dialog")[0].replace(`/${params.sheetId}`, "")
+	);
 
 	return (
 		navItem && (
