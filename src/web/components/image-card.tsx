@@ -19,9 +19,9 @@ export function ImageCard({
 	const voice = files.find((file) => file.type === "VOICE");
 
 	return (
-		<Card style={{ height: 300 }}>
+		<Card style={{ height: 280 }}>
 			<CardHeader className="flex justify-center">
-				<div style={{ height: 170 }}>
+				<div style={{ height: 150 }}>
 					{image ? (
 						<Image src={`/api/file/${image.id}`} width={150} height={100} alt={`tlacitko-${image.id}`} />
 					) : (
