@@ -8,6 +8,11 @@
 #define BUFFER_SIZE 1024
 #define MAX_FILENAME_LEN 100
 
+FRESULT fr;
+FATFS fs;
+FIL fil;
+int ret;
+
 // Function prototypes
 bool is_equal(const char* str1, const char* str2) {
     return strcmp(str1, str2) == 0;
@@ -23,6 +28,12 @@ char filename[MAX_FILENAME_LEN] = {0}; // Store filename
 int main() {
     // Initialize USB and UART
     stdio_init_all();
+
+    // Initialize SD card
+    if(!sd_init_driver()) {
+        printf("ERROR: Could not initialize SD card\r\n");
+        while (true);
+    }
     
     // LED for debugging
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
@@ -72,12 +83,29 @@ int main() {
         
         // Process the command
         if (is_equal(buffer, "send-data")) {
-            printf("ready\n");
+            // Mount drive
+            fr = f_mount(&fs, "0:", 1);
+            if (fr != FR_OK) {
+                printf("ERROR: Could not mount filesystem (%d)\r\n", fr);
+                while (true);
+            }
+            printf("filesystem mounted\n");
+            printf("ok\n");
         }
         else if (is_equal(buffer, "end-data")) {
             printf("ok\n");
             receive_mode = 0;
             content_iter = 0;
+
+            // Close file
+            fr = f_close(&fil);
+            if (fr != FR_OK) {
+                printf("ERROR: Could not close file (%d)\r\n", fr);
+                while (true);
+            }
+
+            // Unmount drive
+            f_unmount("0:");
         }
         else if (is_equal(buffer, "filename")) {
             printf("ok\n");
@@ -93,6 +121,13 @@ int main() {
                 receive_mode = 2;
                 content_iter = 0;
                 printf("Ready for content\n");
+
+                // Open file for writing ()
+                fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_ALWAYS);
+                if (fr != FR_OK) {
+                    printf("ERROR: Could not open file (%d)\r\n", fr);
+                    while (true);
+                }
             }
             else if (receive_mode == 2) {
                 printf("Content chunk %d received (%d bytes)\n", content_iter, (int)strlen(buffer));
@@ -100,6 +135,12 @@ int main() {
                 
                 // Here you would process/save the content
                 // For example, append to a file named 'filename'
+                ret = f_printf(&fil, buffer);
+                if (ret < 0) {
+                    printf("ERROR: Could not write to file (%d)\r\n", ret);
+                    f_close(&fil);
+                    while (true);
+                }
             }
             else {
                 printf("Unknown command: %s\n", buffer);
