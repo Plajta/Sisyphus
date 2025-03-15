@@ -1,6 +1,11 @@
+#include <cstdint>
+#include <hardware/gpio.h>
 #include <stdio.h>
+#include <sys/_intsup.h>
 #include "pico/stdlib.h"
 #include "APDS9960.h"
+
+#define LED_PIN 26
 
 int main() 
 {
@@ -25,6 +30,9 @@ int main()
     uint16_t red_light = 0;
     uint16_t green_light = 0;
     uint16_t blue_light = 0;
+
+    // other vars
+    int curr_page = 0;
 
     printf("\n");
     printf("------------------------------------\n");
@@ -55,6 +63,16 @@ int main()
         {
             printf("Ambient: %d Red: %d Green: %d Blue: %d\n",
                    ambient_light, red_light, green_light, blue_light);
+
+            if (ambient_light < 15) curr_page = 0; // no page inserted
+            if (ambient_light > 100) curr_page = -1; // invalid page inserted
+
+
+            if (red_light > green_light && red_light > blue_light) curr_page = 1; // red light
+            else if (green_light > red_light && green_light > blue_light) curr_page = 2; // green light
+            else if (blue_light > red_light && blue_light > green_light) curr_page = 3; // blue light
+            
+            printf("Currently on page: %d\n", curr_page);
         }
 
         // Wait 1 second before the next reading
