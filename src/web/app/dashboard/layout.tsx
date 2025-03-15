@@ -3,11 +3,19 @@ import { NavActions } from "~/components/nav-actions";
 import { PageBreadcrumb } from "~/components/page-breadcrumb";
 import { Separator } from "~/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
+import { prisma } from "~/modules/prisma";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+	const sheets = await prisma.sheet.findMany({
+		select: {
+			id: true,
+			name: true,
+		},
+	});
+
 	return (
 		<SidebarProvider>
-			<AppSidebar />
+			<AppSidebar sheets={sheets} />
 			<SidebarInset>
 				<header className="flex h-14 shrink-0 items-center gap-2">
 					<div className="flex flex-1 items-center gap-2 px-3">
