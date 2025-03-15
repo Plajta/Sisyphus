@@ -1,4 +1,6 @@
 #include "APDS9960.h"
+#include <stdio.h>
+
 
 /**
 * @brief Constructor - Instantiates APDS9960 object
@@ -31,20 +33,16 @@ APDS9960::~APDS9960()
 *
 * @return True if initialized successfully. False otherwise.
 */
-bool APDS9960::init()
+bool APDS9960::init(i2c_inst_t* i2c_inst)
 {
 	uint8_t id;
-
-	/* Initialize I2C */
-	fd_ = i2c_init(i2c0, 400 * 1000);
-	if(fd_ == -1) {
-		return false;
-	}
+	i2c = i2c_inst;
 	
 	/* Read ID register and check against known values for APDS-9960 */
 	if( !wireReadDataByte(APDS9960_ID, id) ) {
 		return false;
 	}
+
 	if( !(id == APDS9960_ID_1 || id == APDS9960_ID_2) ) {
 		return false;
 	}
@@ -2068,7 +2066,7 @@ bool APDS9960::setGestureMode(uint8_t mode)
 */
 bool APDS9960::wireWriteByte(uint8_t val)
 {   
-	int bytes_written = i2c_write_blocking(i2c0, APDS9960_I2C_ADDR, &val, 1, false);
+	int bytes_written = i2c_write_blocking(i2c, APDS9960_I2C_ADDR, &val, 1, false);
 	return (bytes_written == 1);
 }
 
@@ -2085,7 +2083,7 @@ bool APDS9960::wireWriteDataByte(uint8_t reg, uint8_t val)
 	buf[0] = reg;
 	buf[1] = val;
 
-	int bytes_written = i2c_write_blocking(i2c0, APDS9960_I2C_ADDR, buf, 2, false);
+	int bytes_written = i2c_write_blocking(i2c, APDS9960_I2C_ADDR, buf, 2, false);
 	return (bytes_written == 2);
 }
 
@@ -2105,7 +2103,7 @@ bool APDS9960::wireWriteDataBlock(uint8_t reg, uint8_t *val, unsigned int len)
 		buf[i + 1] = val[i];
 	}
 
-	int bytes_written = i2c_write_blocking(i2c0, APDS9960_I2C_ADDR, buf, len + 1, false);
+	int bytes_written = i2c_write_blocking(i2c, APDS9960_I2C_ADDR, buf, len + 1, false);
 
 	delete[] buf;
 	return (bytes_written == (int)(len + 1));
@@ -2121,8 +2119,8 @@ bool APDS9960::wireWriteDataBlock(uint8_t reg, uint8_t *val, unsigned int len)
 bool APDS9960::wireReadDataByte(uint8_t reg, uint8_t &val)
 {
 	int bytes_read;
-	i2c_write_blocking(i2c0, APDS9960_I2C_ADDR, &reg, 1, true);
-	bytes_read = i2c_read_blocking(i2c0, APDS9960_I2C_ADDR, &val, 1, false);
+	i2c_write_blocking(i2c, APDS9960_I2C_ADDR, &reg, 1, true);
+	bytes_read = i2c_read_blocking(i2c, APDS9960_I2C_ADDR, &val, 1, false);
 	return (bytes_read == 1);
 }
 
@@ -2136,11 +2134,11 @@ bool APDS9960::wireReadDataByte(uint8_t reg, uint8_t &val)
 */
 int APDS9960::wireReadDataBlock(uint8_t reg, uint8_t *val, unsigned int len)
 {
-	int bytes_written = i2c_write_blocking(i2c0, APDS9960_I2C_ADDR, &reg, 1, true);
+	int bytes_written = i2c_write_blocking(i2c, APDS9960_I2C_ADDR, &reg, 1, true);
 	if (bytes_written != 1){
 		return -1;
 	}
 
-	int bytes_read = i2c_read_blocking(i2c0, APDS9960_I2C_ADDR, val, len, false);
+	int bytes_read = i2c_read_blocking(i2c, APDS9960_I2C_ADDR, val, len, false);
 	return (bytes_read < 0) ? -1 : bytes_read;
 }

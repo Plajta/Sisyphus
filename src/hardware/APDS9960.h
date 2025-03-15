@@ -210,7 +210,7 @@ public:
 	/* Initialization methods */
 	APDS9960();
 	~APDS9960();
-	bool init();
+	bool init(i2c_inst_t* i2c_inst);
 	uint8_t getMode();
 	bool setMode(uint8_t mode, uint8_t enable);
 	
@@ -331,7 +331,7 @@ private:
 	int gesture_far_count_;
 	int gesture_state_;
 	int gesture_motion_;
-	int fd_;
+	i2c_inst_t* i2c;
 };
 
 #endif

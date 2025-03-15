@@ -7,6 +7,18 @@ int main()
     // Initialize standard I/O
     stdio_init_all();
 
+    sleep_ms(5000); // TEST
+
+    // Initialize I2C
+    i2c_inst_t *i2c = i2c0;
+	i2c_init(i2c, 100 * 1000);
+    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+
+    printf("I2C instance: %p\n", i2c);
+
     // Initialize the APDS9960 sensor
     APDS9960 apds;
     uint16_t ambient_light = 0;
@@ -20,7 +32,7 @@ int main()
     printf("------------------------------------\n");
 
     // Initialize APDS-9960 (configure I2C and initial values)
-    if (!apds.init() || !apds.enableLightSensor(false)) 
+    if (!apds.init(i2c) || !apds.enableLightSensor(false)) 
     {
         printf("APDS-9960 init failed!\n");
         return 1;
