@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include "pico/stdlib.h"
 #include "sd_card.h"
 #include "ff.h"
@@ -10,7 +13,6 @@ int main() {
     FIL fil;
     int ret;
     char buf[100];
-    char filename[] = "test02.txt";
 
     // Initialize chosen serial port
     stdio_init_all();
@@ -37,6 +39,28 @@ int main() {
         while (true);
     }
 
+    char filename[100];
+
+    //získíní názvu souboru
+    printf("Nyní zadejte nazev souboru:\r\n");
+    int i = 0;
+    while (true) {
+        buf[0] = getchar();
+        if((buf[0] == '\r') || (buf[0] == '\n')) {
+            break;
+        }else{
+            const char* str = new char[2]{buf[0],'\0'};
+            printf(str);
+            filename[i] = buf[0];
+        i++;
+        }
+    }
+    filename[++i] = '\0';
+
+    printf("\r\nfilename:\r\n");
+    printf(filename);
+    printf("\r\n");
+
     // Open file for writing ()
     fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_ALWAYS);
     if (fr != FR_OK) {
@@ -44,41 +68,27 @@ int main() {
         while (true);
     }
 
-    // Write something to file
-    ret = f_printf(&fil, "This is another test\r\n");
-    if (ret < 0) {
-        printf("ERROR: Could not write to file (%d)\r\n", ret);
-        f_close(&fil);
-        while (true);
+    //print to file
+    printf("Nyní zadejte nazev obsah:");
+    while (true) {
+        buf[0] = getchar();
+        if (buf[0] == 4) {
+            break;
+        } else {
+            const char* str = new char[2]{buf[0], '\0'};
+            ret = f_printf(&fil, str);
+            printf(str);
+            if ((buf[0] == '\r') || (buf[0] == '\n')) {
+                printf("\r\n");
+                ret = f_printf(&fil, "\r\n");
+            }
+            if (ret < 0) {
+                printf("ERROR: Could not write to file (%d)\r\n", ret);
+                f_close(&fil);
+                while (true);
     }
-    ret = f_printf(&fil, "of writing to an SD card.\r\n");
-    if (ret < 0) {
-        printf("ERROR: Could not write to file (%d)\r\n", ret);
-        f_close(&fil);
-        while (true);
+        }
     }
-
-    // Close file
-    fr = f_close(&fil);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not close file (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Open file for reading
-    fr = f_open(&fil, filename, FA_READ);
-    if (fr != FR_OK) {
-        printf("ERROR: Could not open file (%d)\r\n", fr);
-        while (true);
-    }
-
-    // Print every line in file over serial
-    printf("Reading from file '%s':\r\n", filename);
-    printf("---\r\n");
-    while (f_gets(buf, sizeof(buf), &fil)) {
-        printf(buf);
-    }
-    printf("\r\n---\r\n");
 
     // Close file
     fr = f_close(&fil);
