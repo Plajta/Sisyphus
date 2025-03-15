@@ -11,7 +11,8 @@ interface FormWrapperProps {
 
 interface ResponseData {
 	success: boolean;
-	message: string;
+	message?: string;
+	redirect?: string;
 }
 
 export function FormWrapper({ action, children, className }: FormWrapperProps) {
@@ -19,8 +20,14 @@ export function FormWrapper({ action, children, className }: FormWrapperProps) {
 
 	const { execute } = useAction(action, {
 		onSuccess: ({ data }) => {
-			if ((data as ResponseData).success) {
-				router.back();
+			const responseData = data as ResponseData;
+
+			if (responseData.success) {
+				if (responseData.redirect) {
+					router.push(responseData.redirect);
+				} else {
+					router.back();
+				}
 			}
 		},
 	});

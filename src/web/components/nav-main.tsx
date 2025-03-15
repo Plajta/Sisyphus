@@ -2,12 +2,14 @@
 
 import { Collapsible } from "@radix-ui/react-collapsible";
 import { ChevronRight, type LucideIcon } from "lucide-react";
+import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { Button } from "~/components/ui/button";
+
 import { CollapsibleContent, CollapsibleTrigger } from "~/components/ui/collapsible";
 
 import {
 	SidebarGroup,
-	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuAction,
 	SidebarMenuButton,
@@ -31,7 +33,12 @@ export function NavMain({ items }: { items: NavItem[] }) {
 
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel>Platform</SidebarGroupLabel>
+			<Link className="mb-2" href={`/dashboard/configuration/sheet/${params.sheetId}/dialog/sheet/new`}>
+				<Button className="w-full" variant="outline">
+					Přidat Konfiguraci
+				</Button>
+			</Link>
+
 			<SidebarMenu>
 				{items.map((item) => (
 					<Collapsible
