@@ -1,0 +1,3 @@
+[submodule "src/hardware/sd_card_reader/lib/no-OS-FatFS-SD-SPI-RPi-Pico"]
+	path = src/hardware/sd_card_reader/lib/no-OS-FatFS-SD-SPI-RPi-Pico
+	url = https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico.git
