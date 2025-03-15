@@ -1,18 +1,28 @@
 #include <cstdint>
 #include <hardware/gpio.h>
+#include <hardware/i2c.h>
+#include <pico/time.h>
 #include <stdio.h>
 #include <sys/_intsup.h>
 #include "pico/stdlib.h"
 #include "APDS9960.h"
 
-#define LED_PIN 26
+#define LED_PIN 22
+
+void rgb_led_on(){gpio_put(LED_PIN, 0);}
+void rgb_led_off(){gpio_put((LED_PIN),1);}
 
 int main() 
 {
     // Initialize standard I/O
     stdio_init_all();
 
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+
     sleep_ms(5000); // TEST
+
+    rgb_led_on();
 
     // Initialize I2C
     i2c_inst_t *i2c = i2c0;
@@ -76,7 +86,7 @@ int main()
         }
 
         // Wait 1 second before the next reading
-        sleep_ms(1000);
+        sleep_ms(500);
     }
 
     return 0;

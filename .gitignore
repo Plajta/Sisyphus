@@ -1,3 +1,3 @@
-/src/hardware/build/*
-!/src/hardware/build/.gitkeep
+/src/hardware/rgb_sensor/build
+/src/hardware/sd_card_reader/build
 .DS_Store
