@@ -4,7 +4,7 @@ import { z } from "zod";
 import { actionClient } from "~/modules/safe-action";
 import { prisma } from "~/modules/prisma";
 
-import { PageSizes, PDFDocument, rgb } from "pdf-lib";
+import { PageSizes, PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { writeFile } from "node:fs/promises";
 
 const path = `${process.cwd()}/files`;
@@ -58,6 +58,19 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 	const pdfDoc = await PDFDocument.create();
 
 	const page = pdfDoc.addPage(PageSizes.A4);
+
+	const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+	const text = "© Plajtakom 2025";
+	const fontSize = 15;
+
+	page.drawText(text, {
+		x: mmsToPoints(2),
+		y: mmsToPoints(143),
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	});
 
 	page.drawLine({
 		start: { x: 0, y: sheetDimensions.buttonGridHeight },
