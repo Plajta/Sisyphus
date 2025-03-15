@@ -18,6 +18,7 @@ model Sheet {
     colorCode String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    buttons   Button[]
 
     @@map("sheets")
 }
@@ -40,6 +41,8 @@ model Button {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     files     File[]
+    Sheet     Sheet    @relation(fields: [sheetId], references: [id])
+    sheetId   Int
 
     @@map("buttons")
 }
