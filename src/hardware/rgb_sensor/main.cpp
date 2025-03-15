@@ -9,8 +9,8 @@
 
 #define LED_PIN 22
 
-void rgb_led_on(){gpio_put(LED_PIN, 0);}
-void rgb_led_off(){gpio_put((LED_PIN),1);}
+void rgb_led_on(){gpio_put(LED_PIN, 1);}
+void rgb_led_off(){gpio_put((LED_PIN),0);}
 
 int main() 
 {
@@ -74,13 +74,15 @@ int main()
             printf("Ambient: %d Red: %d Green: %d Blue: %d\n",
                    ambient_light, red_light, green_light, blue_light);
 
-            if (ambient_light < 15) curr_page = 0; // no page inserted
-            if (ambient_light > 100) curr_page = -1; // invalid page inserted
-
-
-            if (red_light > green_light && red_light > blue_light) curr_page = 1; // red light
-            else if (green_light > red_light && green_light > blue_light) curr_page = 2; // green light
-            else if (blue_light > red_light && blue_light > green_light) curr_page = 3; // blue light
+            if (ambient_light > 2000 || ambient_light < 200){
+                if (ambient_light < 200) curr_page = 0; // no page inserted
+                if (ambient_light > 2000) curr_page = -1; // invalid page inserted
+            }
+            else{
+                if (red_light > green_light && red_light > blue_light) curr_page = 1; // red light
+                else if (green_light > red_light && green_light > blue_light) curr_page = 2; // green light
+                else if (blue_light > red_light && blue_light > green_light) curr_page = 3; // blue light
+            }
             
             printf("Currently on page: %d\n", curr_page);
         }
