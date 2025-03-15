@@ -2,10 +2,9 @@ import serial
 import time
 import argparse
 
-import os
 
 class SerialCommunicator:
-    def __init__(self, port='/dev/ttyACM0', baudrate=9600, timeout=1):
+    def __init__(self, port='/dev/ttyACM0', baudrate=115200, timeout=1):
         """Initialize the serial connection."""
         self.port = port
         self.baudrate = baudrate
@@ -48,7 +47,7 @@ class SerialCommunicator:
             if isinstance(command, bytes):
                 self.ser.write(command)
             else:
-                self.ser.write(command.encode('utf-8'))
+                self.ser.write(command.encode('ascii'))
             print(f"Sent: {command.strip()}")
 
             if wait_for_response:
@@ -57,10 +56,17 @@ class SerialCommunicator:
 
                 # Read response
                 response = ""
-                while self.ser.in_waiting > 0:
-                    line = self.ser.readline().decode('utf-8').strip()
-                    line = line.replace("\n", "")
-                    response += line + "\n"
+                try:
+                    while self.ser.in_waiting > 0:
+                        line = self.ser.readline().decode().strip()
+                        line = line.replace("\n", "")
+                        response += line + "\n"
+
+                    if command in response:
+                        response = response.replace(command, "").strip()
+                except Exception as E:
+                    # Cannot decode (just forget it)
+                    pass
 
                 if response:
                     print("Received: " + response)
@@ -87,7 +93,7 @@ def interactive_mode(communicator):
             file_path = command.split(" ")[1]
             with open(file_path, "rb") as byte_file:
                 while True:
-                    chunk = byte_file.read(256)
+                    chunk = byte_file.read(512)
                     if not chunk:
                         break
 
@@ -98,7 +104,7 @@ def interactive_mode(communicator):
 
 def main():
     parser = argparse.ArgumentParser(description="Simple Serial Communicator")
-    parser.add_argument("--port", default="/dev/ttyACM1", help="Serial port to use")
+    parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port to use")
     parser.add_argument("--baudrate", type=int, default=9600, help="Baud rate")
     parser.add_argument("--command", help="Single command to send (if not specified, enters interactive mode)")
 
