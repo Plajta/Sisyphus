@@ -98,7 +98,8 @@ int main() {
                 printf("Content chunk %d received (%d bytes)\n", content_iter, (int)strlen(buffer));
                 content_iter += 1;
                 
-                printf("Content:  %s", buffer);
+                // Here you would process/save the content
+                // For example, append to a file named 'filename'
             }
             else {
                 printf("Unknown command: %s\n", buffer);

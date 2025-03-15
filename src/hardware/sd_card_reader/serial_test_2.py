@@ -39,12 +39,16 @@ class SerialCommunicator:
             return None
 
         # Add newline if not present
-        if not command.endswith('\n'):
-            command += '\n'
+        if isinstance(command, str):
+            if not command.endswith('\n'):
+                command += '\n'
 
         try:
             # Send the command
-            self.ser.write(command.encode('utf-8'))
+            if isinstance(command, bytes):
+                self.ser.write(command)
+            else:
+                self.ser.write(command.encode('utf-8'))
             print(f"Sent: {command.strip()}")
 
             if wait_for_response:
@@ -59,7 +63,6 @@ class SerialCommunicator:
                     response += line + "\n"
 
                 if response:
-
                     print("Received: " + response.replace(command, ""))
                     return response
                 else:
@@ -80,8 +83,8 @@ def interactive_mode(communicator):
 
         if command.lower() in ['exit', 'quit']:
             break
-        elif command.lower() in ['send-file']:
-            file_path = command[1]
+        elif 'send-file' in command.lower():
+            file_path = command.split(" ")[1]
             with open(file_path, "rb") as byte_file:
                 while True:
                     chunk = byte_file.read(256)
@@ -95,7 +98,7 @@ def interactive_mode(communicator):
 
 def main():
     parser = argparse.ArgumentParser(description="Simple Serial Communicator")
-    parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port to use")
+    parser.add_argument("--port", default="/dev/ttyACM1", help="Serial port to use")
     parser.add_argument("--baudrate", type=int, default=9600, help="Baud rate")
     parser.add_argument("--command", help="Single command to send (if not specified, enters interactive mode)")
 
