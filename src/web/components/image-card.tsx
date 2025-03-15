@@ -20,8 +20,10 @@ export function ImageCard({
 		<Card style={{ height: 300 }}>
 			<CardHeader className="flex justify-center">
 				<div style={{ height: 170 }}>
-					{image && (
+					{image ? (
 						<Image src={`/api/file/${image.id}`} width={150} height={100} alt={`tlacitko-${image.id}`} />
+					) : (
+						<p>Není nahrán obrázek</p>
 					)}
 				</div>
 			</CardHeader>
