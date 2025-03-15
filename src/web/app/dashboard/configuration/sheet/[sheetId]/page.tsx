@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: Promise<{ sheetId: stri
 
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 				{sheet.buttons.map((item) => (
-					<ImageCard key={item.id} item={item} />
+					<ImageCard key={item.id} item={item} sheetId={sheet.id} />
 				))}
 			</div>
 		</div>

@@ -9,8 +9,10 @@ import { VoiceButton } from "~/components/voice-button";
 
 export function ImageCard({
 	item: { id, text, files },
+	sheetId,
 }: {
 	item: Prisma.ButtonGetPayload<{ include: { files: true } }>;
+	sheetId: number;
 }) {
 	const image = files.find((file) => file.type === "IMAGE");
 
@@ -38,7 +40,7 @@ export function ImageCard({
 						<div className="flex gap-1">
 							<VoiceButton source={voice && `/api/file/${voice.id}`} />
 
-							<Link href={`/dashboard/configuration/dialog/button/${id}`}>
+							<Link href={`/dashboard/configuration/sheet/${sheetId}/dialog/button/${id}`}>
 								<Button variant="outline">
 									<Edit />
 								</Button>
