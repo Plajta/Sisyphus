@@ -69,9 +69,6 @@ int main() {
                 continue;
             }
             
-            // Echo the character back
-            putchar(c);
-            
             if (c == '\n' || c == '\r') {
                 break;
             }
