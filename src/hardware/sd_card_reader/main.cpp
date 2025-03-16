@@ -8,6 +8,14 @@
 #define BUFFER_SIZE 1024
 #define MAX_FILENAME_LEN 100
 
+#define PASS "ok"
+#define ERR "kokote"
+
+FRESULT fr;
+FATFS fs;
+FIL fil;
+int ret;
+
 // Function prototypes
 bool is_equal(const char* str1, const char* str2) {
     return strcmp(str1, str2) == 0;
@@ -23,6 +31,12 @@ char filename[MAX_FILENAME_LEN] = {0}; // Store filename
 int main() {
     // Initialize USB and UART
     stdio_init_all();
+
+    // Initialize SD card
+    if(!sd_init_driver()) {
+        printf("ERROR: Could not initialize SD card\r\n");
+        while (true);
+    }
     
     // LED for debugging
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
@@ -48,6 +62,8 @@ int main() {
     sleep_ms(1000);
     
     char buffer[BUFFER_SIZE];
+
+    int timeout = 0;
     
     while (true) {
         int i = 0;
@@ -58,29 +74,43 @@ int main() {
                 continue;
             }
             
-            // Echo the character back
-            putchar(c);
-            
-            if (c == '\n' || c == '\r') {
+            if ((c == '\n' || c == '\r') && receive_mode != 2) {
                 break;
             }
             buffer[i++] = (char)c;
         }
         buffer[i] = '\0'; // Null terminate
-        
-        printf("\n"); // Add a newline after command
+        printf("buffer len:%d receive_mode:%d timeout:%d buffer:\n",strlen(buffer),receive_mode,timeout);
+        printf(buffer)
         
         // Process the command
         if (is_equal(buffer, "send-data")) {
-            printf("ready\n");
+            // Mount drive
+            fr = f_mount(&fs, "0:", 1);
+            if (fr != FR_OK) {
+                printf("%s\n", ERR);
+                while (true);
+            }
+            printf("%s\n", PASS);
         }
         else if (is_equal(buffer, "end-data")) {
-            printf("ok\n");
             receive_mode = 0;
             content_iter = 0;
+
+            // Close file
+            fr = f_close(&fil);
+            if (fr != FR_OK) {
+                printf("%s\n", ERR);
+                while (true);
+            }
+
+            // Unmount drive
+            f_unmount("0:");
+            printf("%s\n", PASS);
+            printf("ok");
         }
         else if (is_equal(buffer, "filename")) {
-            printf("ok\n");
+            printf("%s\n", PASS);
             receive_mode = 1;
         }
         else if (strlen(buffer) > 0) {
@@ -89,24 +119,45 @@ int main() {
                 strncpy(filename, buffer, MAX_FILENAME_LEN - 1);
                 filename[MAX_FILENAME_LEN - 1] = '\0'; // Ensure null termination
                 
-                printf("Filename set to: '%s'\n", filename);
+                printf("%s\n", PASS);
                 receive_mode = 2;
                 content_iter = 0;
-                printf("Ready for content\n");
+
+                // Open file for writing ()
+                fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_ALWAYS);
+                if (fr != FR_OK) {
+                    printf("%s\n", ERR);
+                    while (true);
+                }
             }
             else if (receive_mode == 2) {
-                printf("Content chunk %d received (%d bytes)\n", content_iter, (int)strlen(buffer));
+                printf("%s\n", PASS);
                 content_iter += 1;
                 
                 // Here you would process/save the content
                 // For example, append to a file named 'filename'
+                ret = f_printf(&fil, buffer);
+                if (ret < 0) {
+                    printf("%s\n", ERR);
+                    f_close(&fil);
+                    while (true);
+                }
+                timeout=0;
             }
             else {
-                printf("Unknown command: %s\n", buffer);
-                printf("Available commands: send-data, filename, end-data\n");
+                printf("%s\n", ERR);
             }
         }
         
+        if(receive_mode == 2){
+            timeout++;
+            printf("%d",timeout);
+            if(timeout > 10){
+                receive_mode=0;
+                printf("recive mode");
+            }
+        }
+
         // Small delay to avoid flooding console
         sleep_ms(100);
     }

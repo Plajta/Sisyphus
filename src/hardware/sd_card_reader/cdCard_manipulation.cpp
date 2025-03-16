@@ -61,6 +61,35 @@ int main() {
         while (true);
     }
 
+    // Open file for reading
+    fr = f_open(&fil, filename, FA_READ);
+    if (fr != FR_OK) {
+        printf("ERROR: Could not open file (%d)\r\n", fr);
+        while (true); (true);
+    }
+
+    // Close file
+    fr = f_close(&fil);
+    if (fr != FR_OK) {
+        printf("ERROR: Could not close file (%d)\r\n", fr);
+        while (true);
+    }
+
+    // Print every line in file over serial
+    printf("Reading from file '%s':\r\n", filename);
+    printf("---\r\n");
+    while (f_gets(buf, sizeof(buf), &fil)) {
+        printf(buf);
+    }
+    printf("\r\n---\r\n");
+
+    // Close file
+    fr = f_close(&fil);
+    if (fr != FR_OK) {
+        printf("ERROR: Could not close file (%d)\r\n", fr);
+        while (true);
+    }
+
     // Unmount drive
     f_unmount("0:");
 
