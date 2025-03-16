@@ -8,6 +8,9 @@
 #define BUFFER_SIZE 1024
 #define MAX_FILENAME_LEN 100
 
+#define PASS "ok"
+#define ERR "kokote"
+
 FRESULT fr;
 FATFS fs;
 FIL fil;
@@ -76,36 +79,33 @@ int main() {
         }
         buffer[i] = '\0'; // Null terminate
         
-        printf("\n"); // Add a newline after command
-        
         // Process the command
         if (is_equal(buffer, "send-data")) {
             // Mount drive
             fr = f_mount(&fs, "0:", 1);
             if (fr != FR_OK) {
-                printf("ERROR: Could not mount filesystem (%d)\r\n", fr);
+                printf("%s\n", ERR);
                 while (true);
             }
-            printf("filesystem mounted\n");
-            printf("ok\n");
+            printf("%s\n", PASS);
         }
         else if (is_equal(buffer, "end-data")) {
-            printf("ok\n");
             receive_mode = 0;
             content_iter = 0;
 
             // Close file
             fr = f_close(&fil);
             if (fr != FR_OK) {
-                printf("ERROR: Could not close file (%d)\r\n", fr);
+                printf("%s\n", ERR);
                 while (true);
             }
 
             // Unmount drive
             f_unmount("0:");
+            printf("%s\n", PASS);
         }
         else if (is_equal(buffer, "filename")) {
-            printf("ok\n");
+            printf("%s\n", PASS);
             receive_mode = 1;
         }
         else if (strlen(buffer) > 0) {
@@ -114,34 +114,32 @@ int main() {
                 strncpy(filename, buffer, MAX_FILENAME_LEN - 1);
                 filename[MAX_FILENAME_LEN - 1] = '\0'; // Ensure null termination
                 
-                printf("Filename set to: '%s'\n", filename);
+                printf("%s\n", PASS);
                 receive_mode = 2;
                 content_iter = 0;
-                printf("Ready for content\n");
 
                 // Open file for writing ()
                 fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_ALWAYS);
                 if (fr != FR_OK) {
-                    printf("ERROR: Could not open file (%d)\r\n", fr);
+                    printf("%s\n", ERR);
                     while (true);
                 }
             }
             else if (receive_mode == 2) {
-                printf("Content chunk %d received (%d bytes)\n", content_iter, (int)strlen(buffer));
+                printf("%s\n", PASS);
                 content_iter += 1;
                 
                 // Here you would process/save the content
                 // For example, append to a file named 'filename'
                 ret = f_printf(&fil, buffer);
                 if (ret < 0) {
-                    printf("ERROR: Could not write to file (%d)\r\n", ret);
+                    printf("%s\n", ERR);
                     f_close(&fil);
                     while (true);
                 }
             }
             else {
-                printf("Unknown command: %s\n", buffer);
-                printf("Available commands: send-data, filename, end-data\n");
+                printf("%s\n", ERR);
             }
         }
         

@@ -108,7 +108,7 @@ def main():
     parser = argparse.ArgumentParser(description="Simple Serial Communicator")
 
     parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port to use")
-    parser.add_argument("--baudrate", type=int, default=9600, help="Baud rate")
+    parser.add_argument("--baudrate", type=int, default=115200, help="Baud rate")
     parser.add_argument("--command", help="Single command to send (if not specified, enters interactive mode)")
 
     args = parser.parse_args()
