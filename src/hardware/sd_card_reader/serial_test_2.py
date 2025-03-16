@@ -4,11 +4,7 @@ import argparse
 
 
 class SerialCommunicator:
-<<<<<<< HEAD
-    def __init__(self, port='/dev/ttyACM30', baudrate=115200, timeout=1):
-=======
     def __init__(self, port='/dev/ttyACM0', baudrate=115200, timeout=1):
->>>>>>> 64efd7296aa55c58c855710f666797276174a68c
         """Initialize the serial connection."""
         self.port = port
         self.baudrate = baudrate
