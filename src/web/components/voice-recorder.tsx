@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 
 export function VoiceRecorder() {
 	const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -61,6 +62,8 @@ export function VoiceRecorder() {
 			{audioURL && !isRecording && <audio controls src={audioURL} />}
 
 			<input ref={fileInputRef} type="file" name="voice" style={{ display: "none" }} />
+
+			{!audioURL && !isRecording && <Input id="picture" name="image" type="file" accept="voice/wav" />}
 		</div>
 	);
 }
