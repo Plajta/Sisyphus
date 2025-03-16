@@ -10,7 +10,7 @@ import { Prisma } from "@prisma/client";
 export const navItems: NavItem[] = [
 	{
 		title: "Konfigurace",
-		description: "Konfigurace Plajta komunikátoru",
+		description: "Konfigurace Sisyphus komunikátoru",
 		url: "/dashboard/configuration/sheet",
 		icon: Settings,
 		subItems: [
@@ -42,7 +42,7 @@ export function AppSidebar({
 	return (
 		<Sidebar className="border-r-0">
 			<SidebarHeader className="pl-0">
-				<span className="pl-2 truncate font-bold text-xl">Plajta Komunikátor</span>
+				<span className="pl-2 truncate font-bold text-xl">Sisyphus Komunikátor</span>
 
 				<Separator />
 
