@@ -9,6 +9,29 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const path = `${process.cwd()}/files`;
 
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+	hex = hex.replace(/^#/, "");
+
+	if (hex.length === 3) {
+		hex = hex
+			.split("")
+			.map((char) => char + char)
+			.join("");
+	}
+
+	if (hex.length !== 6) {
+		return null;
+	}
+
+	const num = parseInt(hex, 16);
+
+	return {
+		r: (num >> 16) & 255,
+		g: (num >> 8) & 255,
+		b: num & 255,
+	};
+}
+
 function mmsToPoints(mms: number) {
 	return mms * 2.83465;
 }
@@ -137,12 +160,14 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 		borderColor: rgb(0, 0, 0),
 	});
 
+	const sheetColor = hexToRgb(sheet.colorCode)!;
+
 	page.drawRectangle({
 		x: offsetPoints(sheetDimensions.sectionDimensions + sheetDimensions.buttonGridGap * 2),
 		y: offsetPoints(sheetDimensions.buttonGridHeight + mmsToPoints(10)),
 		height: sheetDimensions.colorSectionHeight,
 		width: sheetDimensions.sectionDimensions,
-		color: rgb(1, 0, 0),
+		color: rgb(sheetColor.r / 255, sheetColor.g / 255, sheetColor.b / 255),
 	});
 
 	const button2DArray = create2DArrayFromArray(sheet.buttons);
