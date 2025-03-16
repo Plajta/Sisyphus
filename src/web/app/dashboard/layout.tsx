@@ -11,6 +11,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
 			id: true,
 			name: true,
 		},
+		orderBy: {
+			createdAt: "asc",
+		},
 	});
 
 	return (

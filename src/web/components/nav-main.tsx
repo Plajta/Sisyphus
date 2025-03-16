@@ -4,6 +4,7 @@ import { Collapsible } from "@radix-ui/react-collapsible";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { Serial } from "~/components/serial";
 import { Button } from "~/components/ui/button";
 
 import { CollapsibleContent, CollapsibleTrigger } from "~/components/ui/collapsible";
@@ -33,11 +34,15 @@ export function NavMain({ items }: { items: NavItem[] }) {
 
 	return (
 		<SidebarGroup>
-			<Link className="mb-2" href={`/dashboard/configuration/sheet/${params.sheetId}/dialog/sheet/new`}>
-				<Button className="w-full" variant="outline">
-					Přidat Konfiguraci
-				</Button>
-			</Link>
+			<div className="flex flex-col gap-1">
+				<Serial />
+
+				<Link className="mb-2" href={`/dashboard/configuration/sheet/${params.sheetId}/dialog/sheet/new`}>
+					<Button className="w-full" variant="outline">
+						Přidat Konfiguraci
+					</Button>
+				</Link>
+			</div>
 
 			<SidebarMenu>
 				{items.map((item) => (
