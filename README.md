@@ -10,4 +10,4 @@ Projekt zpracovávaný na **Aimtec hackathonu 2025** tak, aby umožnil autistick
 ## Technické informace
 
 - počet konfigurovatelných tlačítek - *3x3*
-- počet podporovaných štítků - 5 (asi??? **TODO: empiricky zjistit**)
+- počet podporovaných štítků - 5
