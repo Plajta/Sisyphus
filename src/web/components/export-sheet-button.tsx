@@ -11,7 +11,7 @@ export function ExportSheetButton({ id }: ExportSheetButtonProps) {
 	return (
 		<Button
 			onClick={async () => {
-				const response = await exportSheet({ id, type: "plajta" });
+				const response = await exportSheet({ id });
 
 				if (response && response.data && response.data.redirect) {
 					window.open(`http://localhost:3000${response.data.redirect}`, "_blank");

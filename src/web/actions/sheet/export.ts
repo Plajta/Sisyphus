@@ -40,16 +40,23 @@ function offsetPoints(points: number) {
 	return points + mmsToPoints(10);
 }
 
-function create2DArrayFromArray<T>(arr: T[]): T[][] {
-	if (arr.length !== 9) {
-		throw new Error("Input array must contain exactly 9 elements.");
+function create2DArrayFromArray<T>(arr: T[], rows: number = 3): T[][] {
+	const validLengths = [9, 12];
+
+	if (!validLengths.includes(arr.length)) {
+		throw new Error("Input array must contain exactly 9 or 16 elements.");
+	}
+
+	if (rows !== 3 && rows !== 4) {
+		throw new Error("Rows must be either 3 or 4.");
 	}
 
 	const result: T[][] = [];
-	const size = 3;
+	const size = rows;
+	const elementsPerRow = arr.length / size;
 
 	for (let i = 0; i < size; i++) {
-		result.push(arr.slice(i * size, (i + 1) * size));
+		result.push(arr.slice(i * elementsPerRow, (i + 1) * elementsPerRow));
 	}
 
 	return result.reverse();
@@ -57,10 +64,9 @@ function create2DArrayFromArray<T>(arr: T[]): T[][] {
 
 const schema = z.object({
 	id: z.coerce.number(),
-	type: z.enum(["plajta", "ft12"]),
 });
 
-export const exportSheet = actionClient.schema(schema).action(async ({ parsedInput: { id, type } }) => {
+export const exportSheet = actionClient.schema(schema).action(async ({ parsedInput: { id } }) => {
 	const sheet = await prisma.sheet.findFirst({
 		where: {
 			id,
@@ -80,6 +86,8 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 	if (!sheet) {
 		return { success: false, message: "sheet neni" };
 	}
+
+	const type = sheet.buttons.length === 9 ? "plajta" : "ft12";
 
 	const pdfDoc = await PDFDocument.create();
 
@@ -300,7 +308,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 
 		const button2DArray = create2DArrayFromArray(sheet.buttons).reverse();
 
-		for (const [rowIndex, row] of [...button2DArray, button2DArray[0]].entries()) {
+		for (const [rowIndex, row] of button2DArray.entries()) {
 			for (const [buttonIndex, button] of row.entries()) {
 				const imageFile = button.files.find((file) => file.type === "IMAGE");
 

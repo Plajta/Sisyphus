@@ -8,16 +8,20 @@ import { revalidatePath } from "next/cache";
 
 const schema = zfd.formData({
 	name: zfd.text(z.string()),
+	type: zfd.text(z.enum(["plajta", "ft12"])),
 });
 
-export const createSheet = actionClient.schema(schema).action(async ({ parsedInput: { name } }) => {
+export const createSheet = actionClient.schema(schema).action(async ({ parsedInput: { name, type } }) => {
 	const sheet = await prisma.sheet.create({
 		data: {
 			name,
 			colorCode: "#FFFFFF",
 			buttons: {
 				createMany: {
-					data: Array.from(Array(9).keys()).map(() => ({ text: "Zvol text" })),
+					data:
+						type === "plajta"
+							? Array.from(Array(9).keys()).map(() => ({ text: "Zvol text" }))
+							: Array.from(Array(12).keys()).map(() => ({ text: "Zvol text" })),
 				},
 			},
 		},
