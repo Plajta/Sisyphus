@@ -62,6 +62,8 @@ int main() {
     sleep_ms(1000);
     
     char buffer[BUFFER_SIZE];
+
+    int timeout = 0;
     
     while (true) {
         int i = 0;
@@ -72,12 +74,14 @@ int main() {
                 continue;
             }
             
-            if (c == '\n' || c == '\r') {
+            if ((c == '\n' || c == '\r') && receive_mode != 2) {
                 break;
             }
             buffer[i++] = (char)c;
         }
         buffer[i] = '\0'; // Null terminate
+        printf("buffer len:%d receive_mode:%d timeout:%d buffer:\n",strlen(buffer),receive_mode,timeout);
+        printf(buffer)
         
         // Process the command
         if (is_equal(buffer, "send-data")) {
@@ -103,6 +107,7 @@ int main() {
             // Unmount drive
             f_unmount("0:");
             printf("%s\n", PASS);
+            printf("ok");
         }
         else if (is_equal(buffer, "filename")) {
             printf("%s\n", PASS);
@@ -137,12 +142,22 @@ int main() {
                     f_close(&fil);
                     while (true);
                 }
+                timeout=0;
             }
             else {
                 printf("%s\n", ERR);
             }
         }
         
+        if(receive_mode == 2){
+            timeout++;
+            printf("%d",timeout);
+            if(timeout > 10){
+                receive_mode=0;
+                printf("recive mode");
+            }
+        }
+
         // Small delay to avoid flooding console
         sleep_ms(100);
     }

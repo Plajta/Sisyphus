@@ -65,6 +65,13 @@ int main() {
     fr = f_open(&fil, filename, FA_READ);
     if (fr != FR_OK) {
         printf("ERROR: Could not open file (%d)\r\n", fr);
+        while (true); (true);
+    }
+
+    // Close file
+    fr = f_close(&fil);
+    if (fr != FR_OK) {
+        printf("ERROR: Could not close file (%d)\r\n", fr);
         while (true);
     }
 

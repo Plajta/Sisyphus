@@ -105,16 +105,19 @@ def interactive_mode(communicator):
 
 
 def main():
+    print("whitch /dev/ttyACM?")
+    acm = input() 
+
     parser = argparse.ArgumentParser(description="Simple Serial Communicator")
 
-    parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port to use")
+    parser.add_argument("--port", default=f"/dev/ttyACM{acm}", help="Serial port to use")
     parser.add_argument("--baudrate", type=int, default=115200, help="Baud rate")
     parser.add_argument("--command", help="Single command to send (if not specified, enters interactive mode)")
 
     args = parser.parse_args()
 
     # Create and connect the communicator
-    comm = SerialCommunicator(port=args.port, baudrate=args.baudrate)
+    comm = SerialCommunicator(port=args.port, baudrate=args.baudrate,)
     if not comm.connect():
         return
 
