@@ -58,7 +58,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 					files: true,
 				},
 				orderBy: {
-					createdAt: "asc",
+					id: "asc",
 				},
 			},
 		},
@@ -199,5 +199,5 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 		return { success: true, message: e };
 	}
 
-	return { success: true, redirect: `/api/file/${file.id}` };
+	return { success: true, redirect: `/api/file/${file.id}.pdf` };
 });

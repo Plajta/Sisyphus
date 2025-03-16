@@ -81,6 +81,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.14
+      '@types/dom-serial':
+        specifier: ^1.0.6
+        version: 1.0.6
       '@types/node':
         specifier: ^20
         version: 20.17.24
@@ -1000,6 +1003,9 @@ packages:
 
   '@tailwindcss/postcss@4.0.14':
     resolution: {integrity: sha512-+uIR6KtKhla1XeIanF27KtrfYy+PX+R679v5LxbkmEZlhQe3g8rk+wKj7Xgt++rWGRuFLGMXY80Ek8JNn+kN/g==}
+
+  '@types/dom-serial@1.0.6':
+    resolution: {integrity: sha512-eUHKbc6mdMgMm75/oBLocs3wkOQkPQ/oNCT+b5OgUT6mLgIvDTp3wCCE9tYZNvDPPh6Cj9lVg2IguWfS/mDrrQ==}
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -3103,6 +3109,8 @@ snapshots:
       lightningcss: 1.29.2
       postcss: 8.5.3
       tailwindcss: 4.0.14
+
+  '@types/dom-serial@1.0.6': {}
 
   '@types/estree@1.0.6': {}
 

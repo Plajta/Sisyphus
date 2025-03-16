@@ -28,8 +28,19 @@ export default async function Page({ params }: { params: Promise<{ sheetId: stri
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 px-4 py-8 pb-0">
-			<div className="flex justify-between">
-				<p className="text-xl font-bold">{sheet.name}</p>
+			<div className="flex justify-between items-center">
+				<div className="flex gap-2 items-center">
+					<div
+						style={{
+							backgroundColor: sheet.colorCode,
+							width: 15,
+							height: 15,
+							borderRadius: "50%",
+							display: "inline-block",
+						}}
+					></div>
+					<p className="text-xl font-bold">{sheet.name}</p>
+				</div>
 
 				<ExportSheetButton id={sheet.id} />
 			</div>

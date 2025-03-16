@@ -21,7 +21,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 	try {
 		const fileBuffer = await readFile(
-			`${path}/${id}${file.type === "IMAGE" ? ".png" : file.type === "PDF" ? ".pdf" : ".wav"}`
+			`${path}/${idWithoutExtension}${file.type === "IMAGE" ? ".png" : file.type === "PDF" ? ".pdf" : ".wav"}`
 		);
 
 		return new Response(fileBuffer, {
