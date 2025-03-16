@@ -40,22 +40,21 @@ function offsetPoints(points: number) {
 	return points + mmsToPoints(10);
 }
 
-function create2DArrayFromArray<T>(arr: T[], rows: number = 3): T[][] {
+function create2DArrayFromArray<T>(arr: T[], rows: number): T[][] {
 	const validLengths = [9, 12];
 
 	if (!validLengths.includes(arr.length)) {
-		throw new Error("Input array must contain exactly 9 or 16 elements.");
+		throw new Error("Input array must contain exactly 9 or 12 elements.");
 	}
 
-	if (rows !== 3 && rows !== 4) {
-		throw new Error("Rows must be either 3 or 4.");
+	const elementsPerRow = 3;
+
+	if (arr.length / elementsPerRow !== rows) {
+		throw new Error(`The number of rows must be ${arr.length / elementsPerRow}.`);
 	}
 
 	const result: T[][] = [];
-	const size = rows;
-	const elementsPerRow = arr.length / size;
-
-	for (let i = 0; i < size; i++) {
+	for (let i = 0; i < rows; i++) {
 		result.push(arr.slice(i * elementsPerRow, (i + 1) * elementsPerRow));
 	}
 
@@ -77,7 +76,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 					files: true,
 				},
 				orderBy: {
-					id: "asc",
+					createdAt: "asc",
 				},
 			},
 		},
@@ -208,7 +207,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 			borderColor: rgb(0, 0, 0),
 		});
 
-		const button2DArray = create2DArrayFromArray(sheet.buttons);
+		const button2DArray = create2DArrayFromArray(sheet.buttons, 3);
 
 		for (const [rowIndex, row] of button2DArray.entries()) {
 			for (const [buttonIndex, button] of row.entries()) {
@@ -220,7 +219,8 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 
 				const fileBuffer = await readFile(`${path}/${imageFile.id}.png`);
 
-				const image = await pdfDoc.embedPng(fileBuffer);
+				//todo: pryc s tutim - neni cas
+				const image = sheet.id === 4 ? await pdfDoc.embedJpg(fileBuffer) : await pdfDoc.embedPng(fileBuffer);
 
 				page.drawImage(image, {
 					x: offsetPoints(
@@ -231,17 +231,23 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 					width: dimensions.button.width,
 				});
 
-				page.drawText(button.text.toUpperCase(), {
-					x: offsetPoints(
-						mmsToPoints(10) + buttonIndex * (dimensions.buttonGrid.gap + dimensions.button.width)
-					),
-					y: offsetPoints(
-						mmsToPoints(10) + rowIndex * (dimensions.buttonGrid.gap + dimensions.button.height)
-					),
-					size: 15,
-					font: font,
-					color: rgb(0, 0, 0),
-				});
+				page.drawText(
+					button.text
+						.toUpperCase()
+						.normalize("NFD")
+						.replace(/[\u0300-\u036f]/g, ""),
+					{
+						x: offsetPoints(
+							mmsToPoints(10) + buttonIndex * (dimensions.buttonGrid.gap + dimensions.button.width)
+						),
+						y: offsetPoints(
+							mmsToPoints(10) + rowIndex * (dimensions.buttonGrid.gap + dimensions.button.height)
+						),
+						size: 15,
+						font: font,
+						color: rgb(0, 0, 0),
+					}
+				);
 			}
 		}
 	} else {
@@ -306,7 +312,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 			borderColor: rgb(0, 0, 0),
 		});
 
-		const button2DArray = create2DArrayFromArray(sheet.buttons).reverse();
+		const button2DArray = create2DArrayFromArray(sheet.buttons, 4).reverse();
 
 		for (const [rowIndex, row] of button2DArray.entries()) {
 			for (const [buttonIndex, button] of row.entries()) {
@@ -318,7 +324,7 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 
 				const fileBuffer = await readFile(`${path}/${imageFile.id}.png`);
 
-				const image = await pdfDoc.embedPng(fileBuffer);
+				const image = await pdfDoc.embedJpg(fileBuffer);
 
 				page.drawImage(image, {
 					rotate: degrees(90),
@@ -328,16 +334,22 @@ export const exportSheet = actionClient.schema(schema).action(async ({ parsedInp
 					width: dimensions.button.width - (rowIndex === 0 ? 80 : 50),
 				});
 
-				page.drawText(button.text.toUpperCase(), {
-					rotate: degrees(90),
-					x:
-						offsetPoints(mmsToPoints(15) + rowIndex * (dimensions.button.width + mmsToPoints(10))) +
-						mmsToPoints(10),
-					y: offsetPoints(mmsToPoints(30) + dimensions.button.height * buttonIndex + mmsToPoints(5)),
-					size: 15,
-					font: font,
-					color: rgb(0, 0, 0),
-				});
+				page.drawText(
+					button.text
+						.toUpperCase()
+						.normalize("NFD")
+						.replace(/[\u0300-\u036f]/g, ""),
+					{
+						rotate: degrees(90),
+						x:
+							offsetPoints(mmsToPoints(15) + rowIndex * (dimensions.button.width + mmsToPoints(10))) +
+							mmsToPoints(10),
+						y: offsetPoints(mmsToPoints(30) + dimensions.button.height * buttonIndex + mmsToPoints(5)),
+						size: 15,
+						font: font,
+						color: rgb(0, 0, 0),
+					}
+				);
 			}
 		}
 	}
