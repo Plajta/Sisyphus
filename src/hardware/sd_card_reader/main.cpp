@@ -68,7 +68,7 @@ int main() {
     while (true) {
         int i = 0;
         while (i < BUFFER_SIZE - 1) {
-            int c = getchar();
+            int c = getchar_timeout_us(10000); 
             if (c == PICO_ERROR_TIMEOUT) {
                 // No character received
                 continue;
@@ -81,7 +81,7 @@ int main() {
         }
         buffer[i] = '\0'; // Null terminate
         printf("buffer len:%d receive_mode:%d timeout:%d buffer:\n",strlen(buffer),receive_mode,timeout);
-        printf(buffer)
+        printf(buffer);
         
         // Process the command
         if (is_equal(buffer, "send-data")) {
@@ -130,10 +130,10 @@ int main() {
                     while (true);
                 }
             }
-            else if (receive_mode == 2) {
+            else if (receive_mode == 2 || receive_mode == 3) {
                 printf("%s\n", PASS);
                 content_iter += 1;
-                
+                receive_mode = 3;
                 // Here you would process/save the content
                 // For example, append to a file named 'filename'
                 ret = f_printf(&fil, buffer);
@@ -143,19 +143,23 @@ int main() {
                     while (true);
                 }
                 timeout=0;
+                
             }
             else {
                 printf("%s\n", ERR);
             }
         }
         
-        if(receive_mode == 2){
+
+        if(receive_mode == 3){
             timeout++;
             printf("%d",timeout);
-            if(timeout > 10){
+            if(timeout > 5){
                 receive_mode=0;
                 printf("recive mode");
             }
+        }else{
+            timeout=0;
         }
 
         // Small delay to avoid flooding console
